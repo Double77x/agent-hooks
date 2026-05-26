@@ -1,8 +1,8 @@
 packages:
   - "."
 
-# Security: delay install of packages published < 7 days ago (in minutes)
-minimumReleaseAge: 10080
+# Security: delay install of packages published < 1 day ago (in minutes)
+minimumReleaseAge: 1440
 
 # Fail install on peer dependency mismatches
 strictPeerDependencies: true
