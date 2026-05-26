@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { getPayload } from "@/utils/payload.js";
 
 describe("Payload Utility", () => {
@@ -13,6 +13,7 @@ describe("Payload Utility", () => {
   });
 
   it("uses Claude adapter by default", () => {
+    delete process.env.AI_AGENT_TYPE;
     const raw = { tool_name: "test" };
     const payload = getPayload(raw);
     expect(payload.toolName).toBe("test");

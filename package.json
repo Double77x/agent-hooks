@@ -17,7 +17,7 @@
     "build:diff-hygiene": "esbuild src/hooks/pre-tool-use/diff-hygiene.ts --bundle --platform=node --format=esm --outfile=dist/hooks/pre-tool-use/diff-hygiene.js",
     "build:context-injection": "esbuild src/hooks/pre-tool-use/context-injection.ts --bundle --platform=node --format=esm --outfile=dist/hooks/pre-tool-use/context-injection.js",
     "build:auto-fix": "esbuild src/hooks/post-tool-use/auto-fix.ts --bundle --platform=node --format=esm --outfile=dist/hooks/post-tool-use/auto-fix.js",
-    "build": "pnpm run /^build:/",
+    "build": "pnpm type-check && pnpm run /^build:/",
     "lint": "oxlint src",
     "format": "oxfmt src tests",
     "type-check": "tsc --noEmit",

@@ -16,7 +16,7 @@ describe("Auto-Fix Hook", () => {
   it("detects Node.js project and runs oxlint/oxfmt", () => {
     (fs.existsSync as any).mockImplementation((path: string) => path === "package.json");
 
-    const results = runFixes();
+    const results = runFixes(".");
 
     expect(results.map((r) => r.cmd)).toContain("npx oxlint --fix .");
     expect(results.map((r) => r.cmd)).toContain("npx oxfmt .");
@@ -26,10 +26,10 @@ describe("Auto-Fix Hook", () => {
   it("detects Python project and runs ruff/ty", () => {
     (fs.existsSync as any).mockImplementation((path: string) => path === "uv.lock");
 
-    const results = runFixes();
+    const results = runFixes(".");
 
     expect(results.map((r) => r.cmd)).toContain("ruff check --fix .");
-    expect(results.map((r) => r.cmd)).toContain("ty check .");
+    expect(results.map((r) => r.cmd)).toContain("ruff format .");
     expect(execSync).toHaveBeenCalled();
   });
 });
