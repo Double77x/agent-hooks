@@ -1,0 +1,13 @@
+# Set default behavior to handle line endings automatically.
+* text=auto
+
+# Explicitly set line endings for specific file types.
+# Use LF for all text files unless they are Windows-specific.
+*.ts text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.html text eol=lf
+
+# Force CRLF for PowerShell scripts as they are primarily for Windows.
+*.ps1 text eol=crlf

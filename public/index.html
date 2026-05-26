@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Hooks | Enterprise Safety for AI Agents</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="hooks-data.js"></script>
+</head>
+<body>
+    <div class="terminal-window">
+        <!-- Window title bar -->
+        <div class="title-bar">
+            <div class="window-controls">
+                <span class="dot dot-red"></span>
+                <span class="dot dot-yellow"></span>
+                <span class="dot dot-green"></span>
+            </div>
+            <div class="window-title">user@local: ~/agent-hooks</div>
+            <div class="window-meta">v0.0.1</div>
+        </div>
+
+        <!-- Main Workspace Area -->
+        <div class="tui-layout">
+            <!-- Sidebar Navigation -->
+            <div class="tui-sidebar">
+                <div class="sidebar-header">Core Hooks</div>
+                <div class="hook-item active" data-hook="block-dangerous-commands">
+                    <span class="badge-dot"></span>
+                    <span>block-dangerous</span>
+                </div>
+                <div class="hook-item" data-hook="protect-secrets">
+                    <span class="badge-dot"></span>
+                    <span>protect-secrets</span>
+                </div>
+                <div class="hook-item" data-hook="pkg-manager-enforcement">
+                    <span class="badge-dot"></span>
+                    <span>pkg-enforcement</span>
+                </div>
+                <div class="hook-item" data-hook="require-plan">
+                    <span class="badge-dot"></span>
+                    <span>require-plan</span>
+                </div>
+                <div class="sidebar-header">Quality Gates</div>
+                <div class="hook-item" data-hook="definition-of-done">
+                    <span class="badge-dot"></span>
+                    <span>definition-of-done</span>
+                </div>
+                <div class="hook-item" data-hook="diff-hygiene">
+                    <span class="badge-dot"></span>
+                    <span>diff-hygiene</span>
+                </div>
+                <div class="hook-item" data-hook="context-injection">
+                    <span class="badge-dot"></span>
+                    <span>context-injection</span>
+                </div>
+                <div class="sidebar-header">Formatters</div>
+                <div class="hook-item post-use" data-hook="auto-fix">
+                    <span class="badge-dot"></span>
+                    <span>auto-fix</span>
+                </div>
+            </div>
+
+            <!-- Main Workspace Panel -->
+            <div class="tui-workspace">
+                <!-- Branding Banner -->
+                <div class="banner">
+                    <div class="banner-title">agent-hooks_</div>
+                    <div class="banner-text">Enterprise-grade safety, consistency, and workflow guardrails for Claude Code, Codex, and AGY CLI.</div>
+                </div>
+
+                <!-- Global Installer -->
+                <div class="install-section">
+                    <div class="install-title">
+                        <span>⚡</span> Global Installation Command (PowerShell)
+                    </div>
+                    <div class="install-cmd-box">
+                        <span class="install-cmd" id="installCmd">irm https://raw.githubusercontent.com/Double77x/agent-hooks/main/install-hooks.ps1 | iex</span>
+                        <button class="btn-action" id="copyBtn">Copy</button>
+                    </div>
+                </div>
+
+                <!-- Two columns details & console -->
+                <div class="workspace-grid">
+                    <!-- Hook Details -->
+                    <div class="details-panel" id="detailsPanel">
+                        <div class="details-header">
+                            <span class="details-title" id="hookTitle">Block Dangerous Commands</span>
+                            <span class="details-type-badge" id="hookType">Pre-Tool Use</span>
+                        </div>
+                        <p class="details-desc" id="hookDesc">Detects and prevents destructive shell operations, including root filesystem targets, home folder deletions, and remote script piping directly in shell tools.</p>
+                        
+                        <div class="details-meta-list">
+                            <div class="details-meta-item">Scope: <span id="hookScope">Shell Tools (Bash, run_command, terminal)</span></div>
+                            <div class="details-meta-item">Policy Mode: <span id="hookPolicy">deny / ask</span></div>
+                            <div class="details-meta-item">Source File: <span id="hookFile">src/hooks/pre-tool-use/block-dangerous-commands.ts</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Simulator Console -->
+                    <div class="simulator-panel">
+                        <div class="simulator-header">
+                            <span>Interactive Logs (Simulated)</span>
+                            <button class="btn-action" id="runSimulationBtn" style="font-size:0.65rem; padding:0.15rem 0.4rem;">Simulate Trigger</button>
+                        </div>
+                        <div class="simulator-output" id="simOutput"><span class="term-prompt">user@hooks:~$ </span><span class="term-cmd">run-hook block-dangerous</span><br>Checking payload command "rm -rf /"...<br><span class="ansi-red">[ai-hooks:block-dangerous-commands] blocked shell command: {"command":"rm -rf /","inspected":"rm -rf /","level":"DENY","reason":"[rm-root] rm targeting root filesystem","rule":"rm-root"}</span><br>Result: <span class="ansi-red">DENIED</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TMUX Bottom Status bar -->
+        <div class="tmux-status">
+            <div class="tmux-left">
+                <span class="tmux-session">[agent-hooks]</span>
+                <span>0:bash-</span>
+                <span class="tmux-window-active">1:explorer*</span>
+                <span>2:logs</span>
+            </div>
+            <div class="tmux-right">
+                <span>Built By ❤️ Dan</span>
+                <span>"local-dev"</span>
+                <span class="tmux-time" id="tmuxClock">20:24</span>
+                <span>26-May-26</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let activeHookKey = "block-dangerous-commands";
+
+        // DOM elements
+        const hookItems = document.querySelectorAll('.hook-item');
+        const hookTitle = document.getElementById('hookTitle');
+        const hookType = document.getElementById('hookType');
+        const hookDesc = document.getElementById('hookDesc');
+        const hookScope = document.getElementById('hookScope');
+        const hookPolicy = document.getElementById('hookPolicy');
+        const hookFile = document.getElementById('hookFile');
+        const simOutput = document.getElementById('simOutput');
+        const runSimulationBtn = document.getElementById('runSimulationBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const installCmd = document.getElementById('installCmd');
+        const tmuxClock = document.getElementById('tmuxClock');
+
+        // Clock logic
+        function updateClock() {
+            const now = new Date();
+            const hrs = String(now.getHours()).padStart(2, '0');
+            const mins = String(now.getMinutes()).padStart(2, '0');
+            tmuxClock.innerText = `${hrs}:${mins}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Switch Hook details
+        function selectHook(key) {
+            activeHookKey = key;
+            const data = hooksData[key];
+            
+            // UI state
+            hookItems.forEach(item => {
+                if (item.getAttribute('data-hook') === key) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+
+            // Update info
+            hookTitle.innerText = data.title;
+            hookType.innerText = data.type;
+            if (data.isPost) {
+                hookType.classList.add('post');
+            } else {
+                hookType.classList.remove('post');
+            }
+            hookDesc.innerText = data.desc;
+            hookScope.innerText = data.scope;
+            hookPolicy.innerText = data.policy;
+            hookFile.innerText = data.file;
+
+            // Load static terminal start
+            resetSimulator();
+        }
+
+        function resetSimulator() {
+            const data = hooksData[activeHookKey];
+            simOutput.innerHTML = `<span class="term-prompt">user@hooks:~$ </span><span class="term-cmd">${data.simCmd}</span><span class="cursor"></span>`;
+        }
+
+        // Run simulation log typing/printing effect
+        let simInterval = null;
+        function runSimulation() {
+            clearInterval(simInterval);
+            const data = hooksData[activeHookKey];
+            let currentLine = 0;
+            
+            simOutput.innerHTML = `<span class="term-prompt">user@hooks:~$ </span><span class="term-cmd">${data.simCmd}</span>\n`;
+            
+            simInterval = setInterval(() => {
+                if (currentLine < data.simLog.length) {
+                    simOutput.innerHTML += data.simLog[currentLine] + "\n";
+                    currentLine++;
+                    simOutput.scrollTop = simOutput.scrollHeight;
+                } else {
+                    simOutput.innerHTML += `<span class="term-prompt">user@hooks:~$ </span><span class="cursor"></span>`;
+                    clearInterval(simInterval);
+                }
+            }, 800);
+        }
+
+        // Hook Navigation event listeners
+        hookItems.forEach(item => {
+            item.addEventListener('click', () => {
+                selectHook(item.getAttribute('data-hook'));
+            });
+        });
+
+        runSimulationBtn.addEventListener('click', runSimulation);
+
+        // Copy button event listener
+        copyBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(installCmd.innerText).then(() => {
+                copyBtn.innerText = 'Copied!';
+                copyBtn.style.color = 'var(--green)';
+                copyBtn.style.borderColor = 'var(--green)';
+                setTimeout(() => {
+                    copyBtn.innerText = 'Copy';
+                    copyBtn.style.color = 'var(--text)';
+                    copyBtn.style.borderColor = 'var(--border)';
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+</html>

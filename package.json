@@ -1,0 +1,43 @@
+{
+  "name": "agent-hooks",
+  "version": "0.0.1",
+  "description": "",
+  "keywords": [],
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "build:block-dangerous": "esbuild src/hooks/pre-tool-use/block-dangerous-commands.ts --bundle --platform=node --format=esm --outfile=dist/hooks/pre-tool-use/block-dangerous-commands.js",
+    "build:protect-secrets": "esbuild src/hooks/pre-tool-use/protect-secrets.ts --bundle --platform=node --format=esm --outfile=dist/hooks/pre-tool-use/protect-secrets.js",
+    "build:pkg-enforcement": "esbuild src/hooks/pre-tool-use/pkg-manager-enforcement.ts --bundle --platform=node --format=esm --outfile=dist/hooks/pre-tool-use/pkg-manager-enforcement.js",
+    "build:require-plan": "esbuild src/hooks/pre-tool-use/require-plan.ts --bundle --platform=node --format=esm --outfile=dist/hooks/pre-tool-use/require-plan.js",
+    "build:dod": "esbuild src/hooks/pre-tool-use/definition-of-done.ts --bundle --platform=node --format=esm --outfile=dist/hooks/pre-tool-use/definition-of-done.js",
+    "build:tool-filter": "esbuild src/hooks/pre-tool-use/tool-filter.ts --bundle --platform=node --format=esm --outfile=dist/hooks/pre-tool-use/tool-filter.js",
+    "build:diff-hygiene": "esbuild src/hooks/pre-tool-use/diff-hygiene.ts --bundle --platform=node --format=esm --outfile=dist/hooks/pre-tool-use/diff-hygiene.js",
+    "build:context-injection": "esbuild src/hooks/pre-tool-use/context-injection.ts --bundle --platform=node --format=esm --outfile=dist/hooks/pre-tool-use/context-injection.js",
+    "build:auto-fix": "esbuild src/hooks/post-tool-use/auto-fix.ts --bundle --platform=node --format=esm --outfile=dist/hooks/post-tool-use/auto-fix.js",
+    "build": "pnpm run /^build:/",
+    "lint": "oxlint src",
+    "format": "oxfmt src tests",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "prepare": "simple-git-hooks"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "@vitest/coverage-v8": "^4.1.7",
+    "esbuild": "^0.28.0",
+    "oxfmt": "^0.51.0",
+    "oxlint": "^1.65.0",
+    "simple-git-hooks": "^2.11.1",
+    "tsx": "^4.22.2",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.7"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm build && git add dist"
+  }
+}

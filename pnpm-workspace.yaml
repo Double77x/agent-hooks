@@ -1,0 +1,16 @@
+packages:
+  - "."
+
+# Security: delay install of packages published < 7 days ago (in minutes)
+minimumReleaseAge: 10080
+
+# Fail install on peer dependency mismatches
+strictPeerDependencies: true
+
+# Block transitive dependencies from utilizing exotic sources (Git, raw tarballs)
+blockExoticSubdeps: true
+
+# Allow builds for trusted dependencies
+allowBuilds:
+  esbuild: true
+  simple-git-hooks: true
